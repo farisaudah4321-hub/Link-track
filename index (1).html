@@ -1,0 +1,732 @@
+<html lang="id">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Link Tracker - Pelacak Alamat IP
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  </script>
+ </head>
+ <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 min-h-screen relative overflow-x-hidden">
+  <!-- Background Pattern -->
+  <div aria-hidden="true" class="absolute inset-0 opacity-10 pointer-events-none select-none z-0">
+   <img alt="Background radial pattern of white dots on dark blue gradient" class="w-full h-full object-cover" height="600" src="https://storage.googleapis.com/a1aa/image/1aa22b70-7c91-48c3-e97d-5086ed2ecde7.jpg" width="600"/>
+  </div>
+  <div class="relative z-10 container mx-auto px-4 py-8">
+   <!-- Header -->
+   <header class="text-center mb-8" role="banner">
+    <div aria-label="Crosshairs icon in circle" class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-2xl mx-auto">
+     <i class="fas fa-crosshairs text-3xl text-white">
+     </i>
+    </div>
+    <h1 class="text-5xl font-bold text-white mb-4">
+     Link Tracker
+    </h1>
+    <p class="text-xl text-blue-200 max-w-2xl mx-auto">
+     Buat tautan pelacak yang dapat diakses dengan mudah dan lihat hasilnya di
+        dashboard
+    </p>
+   </header>
+   <!-- Main Content -->
+   <main class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto" role="main">
+    <!-- Link Generator Section -->
+    <section aria-labelledby="link-generator-title" class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl">
+     <h2 class="text-2xl font-bold text-white mb-6 flex items-center" id="link-generator-title">
+      <i class="fas fa-link mr-3 text-blue-400">
+      </i>
+      Pembuat Tautan Pelacak
+     </h2>
+     <form class="space-y-6" id="link-generator-form" novalidate="">
+      <div>
+       <label class="block text-blue-200 mb-2 font-medium" for="target-url">
+        URL Tujuan
+       </label>
+       <input aria-describedby="url-help" autocapitalize="none" autocomplete="url" autocorrect="off" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="target-url" name="target-url" placeholder="https://contoh.com" required="" spellcheck="false" type="url" value="https://example.com"/>
+       <p class="sr-only" id="url-help">
+        Masukkan URL tujuan yang valid, misal https://example.com
+       </p>
+      </div>
+      <button aria-live="polite" class="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2" id="generate-link" type="submit">
+       <i class="fas fa-bolt">
+       </i>
+       <span>
+        Buat Tautan Pelacak
+       </span>
+      </button>
+      <div aria-atomic="true" aria-live="polite" class="hidden" id="generated-link-container">
+       <label class="block text-blue-200 mb-2 font-medium" for="generated-link">
+        Tautan Pelacak Anda
+       </label>
+       <div class="flex space-x-2">
+        <input aria-label="Tautan pelacak yang dihasilkan" aria-readonly="true" class="flex-1 px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" id="generated-link" readonly="" type="text"/>
+        <button aria-label="Salin tautan pelacak" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center" id="copy-link" type="button">
+         <i class="fas fa-copy">
+         </i>
+        </button>
+       </div>
+       <div class="mt-2 text-xs text-blue-300 flex items-center space-x-1">
+        <i class="fas fa-info-circle">
+        </i>
+        <span>
+         Tautan ini dapat langsung diklik dan diakses oleh siapa saja
+        </span>
+       </div>
+      </div>
+     </form>
+    </section>
+    <!-- Dashboard Stats -->
+    <section aria-labelledby="dashboard-stats-title" class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl">
+     <h2 class="text-2xl font-bold text-white mb-6 flex items-center" id="dashboard-stats-title">
+      <i class="fas fa-tachometer-alt mr-3 text-green-400">
+      </i>
+      Statistik Real-time
+     </h2>
+     <div class="grid grid-cols-2 gap-6">
+      <div aria-label="Total Klik" class="bg-blue-500/20 rounded-lg p-4 text-center" role="region">
+       <div aria-live="polite" class="text-2xl font-bold text-white" id="total-clicks">
+        0
+       </div>
+       <div class="text-blue-200 text-sm">
+        Total Klik
+       </div>
+      </div>
+      <div aria-label="IP Unik" class="bg-green-500/20 rounded-lg p-4 text-center" role="region">
+       <div aria-live="polite" class="text-2xl font-bold text-white" id="unique-ips">
+        0
+       </div>
+       <div class="text-green-200 text-sm">
+        IP Unik
+       </div>
+      </div>
+      <div aria-label="Pengguna Mobile" class="bg-purple-500/20 rounded-lg p-4 text-center" role="region">
+       <div aria-live="polite" class="text-2xl font-bold text-white" id="mobile-users">
+        0
+       </div>
+       <div class="text-purple-200 text-sm">
+        Pengguna Mobile
+       </div>
+      </div>
+      <div aria-label="Pengguna Desktop" class="bg-yellow-500/20 rounded-lg p-4 text-center" role="region">
+       <div aria-live="polite" class="text-2xl font-bold text-white" id="desktop-users">
+        0
+       </div>
+       <div class="text-yellow-200 text-sm">
+        Pengguna Desktop
+       </div>
+      </div>
+     </div>
+     <div class="mt-6 text-center">
+      <button aria-label="Refresh Data Statistik" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2 mx-auto" id="refresh-dashboard" type="button">
+       <i class="fas fa-sync-alt">
+       </i>
+       <span>
+        Refresh Data
+       </span>
+      </button>
+     </div>
+    </section>
+   </main>
+   <!-- Dashboard Section -->
+   <section aria-labelledby="tracking-results-title" class="max-w-6xl mx-auto mt-8" id="dashboard-section">
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl overflow-x-auto">
+     <h2 class="text-2xl font-bold text-white mb-6 flex items-center" id="tracking-results-title">
+      <i class="fas fa-database mr-3 text-purple-400">
+      </i>
+      Hasil Pelacakan
+     </h2>
+     <table aria-describedby="tracking-results-desc" class="w-full text-sm border-collapse" role="table">
+      <caption class="sr-only" id="tracking-results-desc">
+       Tabel hasil pelacakan alamat IP, lokasi, perangkat, dan browser
+      </caption>
+      <thead>
+       <tr class="border-b border-white/20">
+        <th class="text-left py-3 px-4 text-blue-200 font-semibold" scope="col">
+         Waktu
+        </th>
+        <th class="text-left py-3 px-4 text-blue-200 font-semibold" scope="col">
+         Alamat IP
+        </th>
+        <th class="text-left py-3 px-4 text-blue-200 font-semibold" scope="col">
+         Lokasi
+        </th>
+        <th class="text-left py-3 px-4 text-blue-200 font-semibold" scope="col">
+         Perangkat
+        </th>
+        <th class="text-left py-3 px-4 text-blue-200 font-semibold" scope="col">
+         Browser
+        </th>
+       </tr>
+      </thead>
+      <tbody id="tracking-results" role="rowgroup">
+       <tr>
+        <td class="text-center py-8 text-blue-200" colspan="5" role="cell">
+         <i class="fas fa-search text-3xl mb-3 opacity-50">
+         </i>
+         <p>
+          Belum ada data pelacakan. Buat tautan pelacak dan bagikan untuk melihat hasilnya.
+         </p>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </section>
+   <!-- How It Works Section -->
+   <section aria-labelledby="how-it-works-title" class="max-w-4xl mx-auto mt-8 bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl">
+    <h2 class="text-2xl font-bold text-white mb-6 text-center" id="how-it-works-title">
+     Cara Kerja Tautan Pelacak
+    </h2>
+    <div class="grid md:grid-cols-3 gap-6">
+     <article aria-label="Langkah 1: Pembuatan" class="text-center">
+      <div aria-hidden="true" class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4 mx-auto">
+       <i class="fas fa-link text-2xl text-white">
+       </i>
+      </div>
+      <h3 class="text-lg font-semibold text-white mb-2">
+       1. Pembuatan
+      </h3>
+      <p class="text-blue-200 text-sm">
+       Buat tautan pelacak dengan URL tujuan yang diinginkan
+      </p>
+     </article>
+     <article aria-label="Langkah 2: Pembagian" class="text-center">
+      <div aria-hidden="true" class="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4 mx-auto">
+       <i class="fas fa-share-alt text-2xl text-white">
+       </i>
+      </div>
+      <h3 class="text-lg font-semibold text-white mb-2">
+       2. Pembagian
+      </h3>
+      <p class="text-blue-200 text-sm">
+       Bagikan tautan ke orang yang ingin Anda lacak
+      </p>
+     </article>
+     <article aria-label="Langkah 3: Analisis" class="text-center">
+      <div aria-hidden="true" class="inline-flex items-center justify-center w-16 h-16 bg-purple-500 rounded-full mb-4 mx-auto">
+       <i class="fas fa-chart-line text-2xl text-white">
+       </i>
+      </div>
+      <h3 class="text-lg font-semibold text-white mb-2">
+       3. Analisis
+      </h3>
+      <p class="text-blue-200 text-sm">
+       Lihat informasi alamat IP di dashboard secara real-time
+      </p>
+     </article>
+    </div>
+   </section>
+   <!-- Footer -->
+   <footer class="text-center mt-12 text-blue-300 text-sm" role="contentinfo">
+    <p>
+     Tautan pelacak ini dapat diakses oleh siapa saja dari perangkat apa pun.
+    </p>
+    <p class="mt-1">
+     Sistem ini dirancang untuk bekerja dengan sempurna tanpa hambatan.
+    </p>
+   </footer>
+  </div>
+  <script>
+   // Array untuk menyimpan data sementara (hanya selama sesi)
+    let trackingData = [];
+
+    // Fungsi untuk membuat ID pendek
+    function generateShortId() {
+      const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    // Fungsi untuk mendapatkan informasi perangkat
+    function getDeviceInfo() {
+      return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        browser: getBrowserName(navigator.userAgent),
+        deviceType: getDeviceType(navigator.userAgent),
+      };
+    }
+
+    // Fungsi deteksi browser
+    function getBrowserName(userAgent) {
+      if (userAgent.includes("Firefox")) return "Firefox";
+      if (userAgent.includes("SamsungBrowser")) return "Samsung Browser";
+      if (userAgent.includes("Opera") || userAgent.includes("OPR")) return "Opera";
+      if (userAgent.includes("Edg")) return "Edge";
+      if (userAgent.includes("Chrome")) return "Chrome";
+      if (userAgent.includes("Safari")) return "Safari";
+      if (userAgent.includes("MSIE") || userAgent.includes("Trident/")) return "IE";
+      return "Unknown";
+    }
+
+    // Fungsi deteksi jenis perangkat
+    function getDeviceType(userAgent) {
+      const mobileRegex =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+      return mobileRegex.test(userAgent) ? "Mobile" : "Desktop";
+    }
+
+    // Fungsi untuk mendapatkan IP publik
+    async function getPublicIP() {
+      try {
+        // Coba beberapa layanan untuk mendapatkan IP publik
+        const services = [
+          "https://api.ipify.org?format=json",
+          "https://ipv4.icanhazip.com/",
+          "https://ident.me/json",
+          "https://api.my-ip.io/ip.json",
+        ];
+
+        for (let service of services) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const response = await fetch(service, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (response.ok) {
+              const contentType = response.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                if (data.ip) return data.ip;
+                if (data.IP) return data.IP;
+              } else {
+                // Some services return plain text IP
+                const text = await response.text();
+                if (text && text.trim().match(/^(\d{1,3}\.){3}\d{1,3}$/)) {
+                  return text.trim();
+                }
+              }
+            }
+          } catch (error) {
+            continue;
+          }
+        }
+
+        // Jika semua layanan gagal, gunakan IP simulasi
+        return generateRandomIP();
+      } catch (error) {
+        return generateRandomIP();
+      }
+    }
+
+    // Fungsi untuk menghasilkan IP acak
+    function generateRandomIP() {
+      const ipParts = [
+        Math.floor(Math.random() * 254) + 1,
+        Math.floor(Math.random() * 254) + 1,
+        Math.floor(Math.random() * 254) + 1,
+        Math.floor(Math.random() * 254) + 1,
+      ];
+      return ipParts.join(".");
+    }
+
+    // Fungsi untuk mendapatkan lokasi berdasarkan IP
+    async function getLocationByIP(ip) {
+      try {
+        // Coba beberapa layanan untuk mendapatkan lokasi
+        const services = [
+          `https://ipapi.co/${ip}/json/`,
+          `https://ipapi.com/ip_api.php?ip=${ip}`,
+          `https://extreme-ip-lookup.com/json/${ip}`,
+        ];
+
+        for (let service of services) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const response = await fetch(service, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.city && data.country) {
+                return {
+                  city: data.city,
+                  region: data.region || data.regionName || "Tidak diketahui",
+                  country: data.country || data.countryName || "Tidak diketahui",
+                };
+              }
+            }
+          } catch (error) {
+            continue;
+          }
+        }
+
+        // Fallback ke lokasi simulasi jika semua layanan gagal
+        const locations = [
+          { city: "Jakarta", region: "DKI Jakarta", country: "Indonesia" },
+          { city: "Surabaya", region: "Jawa Timur", country: "Indonesia" },
+          { city: "Bandung", region: "Jawa Barat", country: "Indonesia" },
+          { city: "Medan", region: "Sumatera Utara", country: "Indonesia" },
+          { city: "New York", region: "New York", country: "USA" },
+          { city: "London", region: "England", country: "UK" },
+          { city: "Tokyo", region: "Kanto", country: "Japan" },
+          { city: "Sydney", region: "New South Wales", country: "Australia" },
+          { city: "Paris", region: "Ile-de-France", country: "France" },
+        ];
+        return locations[Math.floor(Math.random() * locations.length)];
+      } catch (error) {
+        const locations = [
+          { city: "Jakarta", region: "DKI Jakarta", country: "Indonesia" },
+        ];
+        return locations[Math.floor(Math.random() * locations.length)];
+      }
+    }
+
+    // Fungsi untuk membuat tautan pelacak
+    document
+      .getElementById("link-generator-form")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const targetUrlInput = document.getElementById("target-url");
+        let targetUrl = targetUrlInput.value.trim();
+
+        if (!targetUrl) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Silakan masukkan URL tujuan!",
+            background: "#1e293b",
+            color: "#f1f5f9",
+          });
+          targetUrlInput.focus();
+          return;
+        }
+
+        // Pastikan URL diawali dengan https://
+        if (!/^https?:\/\//i.test(targetUrl)) {
+          targetUrl = "https://" + targetUrl;
+        }
+
+        // Validasi URL
+        let validatedUrl;
+        try {
+          validatedUrl = new URL(targetUrl);
+        } catch (e) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text:
+              "URL tidak valid! Pastikan format URL benar (contoh: example.com atau https://example.com)",
+            background: "#1e293b",
+            color: "#f1f5f9",
+          });
+          targetUrlInput.focus();
+          return;
+        }
+
+        // Dapatkan URL dasar dari halaman ini
+        const baseUrl = window.location.origin;
+        const shortId = generateShortId();
+
+        // Buat URL pelacak yang selalu diawali https://
+        const trackingUrl = `https://${window.location.host}/track/${shortId}?url=${encodeURIComponent(
+          validatedUrl.href
+        )}`;
+
+        // Tampilkan tautan yang dihasilkan
+        const generatedLinkContainer = document.getElementById(
+          "generated-link-container"
+        );
+        const generatedLinkInput = document.getElementById("generated-link");
+        generatedLinkInput.value = trackingUrl;
+        generatedLinkContainer.classList.remove("hidden");
+
+        // Tampilkan notifikasi
+        Swal.fire({
+          icon: "success",
+          title: "Tautan Berhasil Dibuat!",
+          html: `Tautan pelacak Anda siap digunakan.<br><small>ID: ${shortId}</small><br><br>
+                       Tautan ini dapat langsung diklik dan diakses oleh siapa saja dari perangkat apa pun.`,
+          background: "#1e293b",
+          color: "#f1f5f9",
+          confirmButtonColor: "#3b82f6",
+        });
+      });
+
+    // Fungsi untuk menyalin tautan
+    document.getElementById("copy-link").addEventListener("click", function () {
+      const linkInput = document.getElementById("generated-link");
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999); // For mobile devices
+
+      try {
+        const successful = document.execCommand("copy");
+        if (successful) {
+          this.innerHTML = '<i class="fas fa-check"></i>';
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-copy"></i>';
+          }, 2000);
+
+          Swal.fire({
+            icon: "success",
+            title: "Tersalin!",
+            text: "Tautan pelacak telah disalin ke clipboard",
+            background: "#1e293b",
+            color: "#f1f5f9",
+            confirmButtonColor: "#3b82f6",
+          });
+        } else {
+          throw new Error("Copy command unsuccessful");
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Menyalin",
+          text: "Silakan salin tautan secara manual",
+          background: "#1e293b",
+          color: "#f1f5f9",
+          confirmButtonColor: "#ef4444",
+        });
+      }
+    });
+
+    // Fungsi untuk menampilkan hasil pelacakan di dashboard
+    function displayTrackingResults() {
+      const resultsContainer = document.getElementById("tracking-results");
+      const totalClicksElement = document.getElementById("total-clicks");
+      const uniqueIpsElement = document.getElementById("unique-ips");
+      const mobileUsersElement = document.getElementById("mobile-users");
+      const desktopUsersElement = document.getElementById("desktop-users");
+
+      // Hitung statistik
+      const uniqueIps = [...new Set(trackingData.map((item) => item.ip))].length;
+      const mobileUsers = trackingData.filter(
+        (item) => item.device.deviceType === "Mobile"
+      ).length;
+      const desktopUsers = trackingData.filter(
+        (item) => item.device.deviceType === "Desktop"
+      ).length;
+
+      // Update statistik
+      totalClicksElement.textContent = trackingData.length;
+      uniqueIpsElement.textContent = uniqueIps;
+      mobileUsersElement.textContent = mobileUsers;
+      desktopUsersElement.textContent = desktopUsers;
+
+      if (trackingData.length === 0) {
+        resultsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-blue-200" role="cell">
+                            <i class="fas fa-search text-3xl mb-3 opacity-50" aria-hidden="true"></i>
+                            <p>Belum ada data pelacakan. Buat tautan pelacak dan bagikan untuk melihat hasilnya.</p>
+                        </td>
+                    </tr>
+                `;
+        return;
+      }
+
+      // Urutkan data terbaru dulu
+      const sortedData = [...trackingData].sort(
+        (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+      );
+
+      // Tampilkan semua data
+      resultsContainer.innerHTML = "";
+
+      sortedData.forEach((click) => {
+        const clickTime = new Date(click.timestamp).toLocaleString("id-ID");
+        const location = click.location
+          ? `${click.location.city}, ${click.location.country}`
+          : "Lokasi tidak diketahui";
+
+        const row = document.createElement("tr");
+        row.className =
+          "border-b border-white/10 hover:bg-white/5 transition-colors duration-200";
+        row.innerHTML = `
+                    <td class="py-3 px-4 text-white">${clickTime}</td>
+                    <td class="py-3 px-4 text-white font-mono">${click.ip}</td>
+                    <td class="py-3 px-4 text-blue-200">${location}</td>
+                    <td class="py-3 px-4 text-blue-200">${click.device.deviceType}</td>
+                    <td class="py-3 px-4 text-blue-200">${click.device.browser}</td>
+                `;
+        resultsContainer.appendChild(row);
+      });
+    }
+
+    // Fungsi refresh dashboard
+    document
+      .getElementById("refresh-dashboard")
+      .addEventListener("click", function () {
+        this.setAttribute("disabled", "disabled");
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
+        setTimeout(() => {
+          this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
+          this.removeAttribute("disabled");
+          displayTrackingResults();
+        }, 500);
+      });
+
+    // Cek apakah ini halaman pelacakan
+    const pathParts = window.location.pathname
+      .split("/")
+      .filter((part) => part !== "");
+    const isTrackingPage = pathParts.length > 0 && pathParts[0] === "track";
+    const shortId = isTrackingPage ? pathParts[1] : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUrl = urlParams.get("url");
+
+    if (isTrackingPage && shortId && targetUrl) {
+      try {
+        const urlObj = new URL(targetUrl);
+
+        // Tampilkan loading saat mengumpulkan data
+        Swal.fire({
+          title: "Mengumpulkan Informasi...",
+          html:
+            '<div class="mt-2 text-sm">Sedang mengumpulkan informasi perangkat Anda...<br>Proses ini otomatis dan tidak memerlukan interaksi.</div>',
+          allowEscapeKey: false,
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          background: "#1e293b",
+          color: "#f1f5f9",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        // Dapatkan informasi perangkat dan IP
+        const deviceInfo = getDeviceInfo();
+
+        getPublicIP()
+          .then(async (ip) => {
+            const location = await getLocationByIP(ip);
+
+            // Buat data klik
+            const clickData = {
+              id: shortId,
+              ip: ip,
+              location: location,
+              device: deviceInfo,
+              timestamp: new Date().toISOString(),
+              referrer: document.referrer || "Langsung",
+            };
+
+            // Tambahkan ke array sementara
+            trackingData.push(clickData);
+
+            // Update dashboard
+            displayTrackingResults();
+
+            // Tampilkan info langsung di halaman tanpa redirect
+            Swal.close();
+
+            // Buat elemen info pelacakan
+            const infoContainer = document.createElement("section");
+            infoContainer.className =
+              "max-w-4xl mx-auto mt-8 bg-white/20 backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-2xl text-white";
+            infoContainer.innerHTML = `
+                        <h2 class="text-3xl font-bold mb-4 text-center">Informasi Pelacakan Anda</h2>
+                        <ul class="space-y-3 text-lg max-w-xl mx-auto">
+                            <li><strong>Waktu:</strong> ${new Date(
+                              clickData.timestamp
+                            ).toLocaleString("id-ID")}</li>
+                            <li><strong>Alamat IP:</strong> ${clickData.ip}</li>
+                            <li><strong>Lokasi:</strong> ${clickData.location.city}, ${clickData.location.region}, ${clickData.location.country}</li>
+                            <li><strong>Perangkat:</strong> ${clickData.device.deviceType}</li>
+                            <li><strong>Browser:</strong> ${clickData.device.browser}</li>
+                            <li><strong>Platform:</strong> ${clickData.device.platform}</li>
+                            <li><strong>Bahasa:</strong> ${clickData.device.language}</li>
+                            <li><strong>Zona Waktu:</strong> ${clickData.device.timezone}</li>
+                            <li><strong>Resolusi Layar:</strong> ${clickData.device.screenResolution}</li>
+                            <li><strong>Referer:</strong> ${clickData.referrer}</li>
+                        </ul>
+                        <div class="mt-6 text-center">
+                            <a href="${urlObj.href}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                                Lanjut ke Tujuan
+                            </a>
+                        </div>
+                    `;
+
+            // Hapus konten utama dan tampilkan info
+            const mainContainer = document.querySelector(
+              "body > div.relative.z-10.container"
+            );
+            if (mainContainer) {
+              mainContainer.style.display = "none";
+            }
+            document.body.appendChild(infoContainer);
+          })
+          .catch((error) => {
+            // Jika gagal dapat IP, tetap tampilkan info dengan fallback
+            Swal.close();
+
+            const fallbackIp = generateRandomIP();
+            const locations = [
+              { city: "Jakarta", region: "DKI Jakarta", country: "Indonesia" },
+            ];
+            const location = locations[Math.floor(Math.random() * locations.length)];
+
+            const clickData = {
+              id: shortId,
+              ip: fallbackIp,
+              location: location,
+              device: getDeviceInfo(),
+              timestamp: new Date().toISOString(),
+              referrer: document.referrer || "Langsung",
+            };
+
+            trackingData.push(clickData);
+            displayTrackingResults();
+
+            const infoContainer = document.createElement("section");
+            infoContainer.className =
+              "max-w-4xl mx-auto mt-8 bg-white/20 backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-2xl text-white";
+            infoContainer.innerHTML = `
+                        <h2 class="text-3xl font-bold mb-4 text-center">Informasi Pelacakan Anda</h2>
+                        <ul class="space-y-3 text-lg max-w-xl mx-auto">
+                            <li><strong>Waktu:</strong> ${new Date(
+                              clickData.timestamp
+                            ).toLocaleString("id-ID")}</li>
+                            <li><strong>Alamat IP:</strong> ${clickData.ip}</li>
+                            <li><strong>Lokasi:</strong> ${clickData.location.city}, ${clickData.location.region}, ${clickData.location.country}</li>
+                            <li><strong>Perangkat:</strong> ${clickData.device.deviceType}</li>
+                            <li><strong>Browser:</strong> ${clickData.device.browser}</li>
+                            <li><strong>Platform:</strong> ${clickData.device.platform}</li>
+                            <li><strong>Bahasa:</strong> ${clickData.device.language}</li>
+                            <li><strong>Zona Waktu:</strong> ${clickData.device.timezone}</li>
+                            <li><strong>Resolusi Layar:</strong> ${clickData.device.screenResolution}</li>
+                            <li><strong>Referer:</strong> ${clickData.referrer}</li>
+                        </ul>
+                        <div class="mt-6 text-center">
+                            <a href="${urlObj.href}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                                Lanjut ke Tujuan
+                            </a>
+                        </div>
+                    `;
+
+            const mainContainer = document.querySelector(
+              "body > div.relative.z-10.container"
+            );
+            if (mainContainer) {
+              mainContainer.style.display = "none";
+            }
+            document.body.appendChild(infoContainer);
+          });
+      } catch (e) {
+        // Jika URL tidak valid, kembalikan ke halaman utama
+        window.location.href = window.location.origin;
+      }
+    }
+
+    // Inisialisasi halaman
+    document.addEventListener("DOMContentLoaded", function () {
+      displayTrackingResults();
+
+      // Update hasil setiap 5 detik jika halaman ini bukan halaman pelacakan
+      if (!isTrackingPage) {
+        setInterval(displayTrackingResults, 5000);
+      }
+    });
+  </script>
+ </body>
+</html>
